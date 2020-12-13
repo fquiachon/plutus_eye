@@ -1,21 +1,36 @@
 # market
 
-## preparation
-### python3 -m venv env
+## Pre Setup
+<p>Create a new Python 3.x virtual environment</p>
 
+`python3 -m venv env`
+
+### Database Setup
+See https://cloud.mongodb.com for the instruction
 
 ## Libraries
 * Flask==1.1.2
-* Flask-SQLAlchemy==2.4.1
-* SQLAlchemy==1.3.17
-* flask-marshmallow==0.12.0
-* marshmallow==3.6.0
-* flask_jwt_extended==3.25.0
+* Flask-JWT-Extended==3.25.0
+* Flask-PyMongo==2.3.0
+* pymongo==3.11.2
+* python-dotenv==0.15.0
+* dnspython==2.0.0
 
 
 ## Endpoints
 POST /register 201
+
 POST /login 200
+
 POST /global/tickers 201
+
 GET /global/tickers 200
+
 DELETE /global/tickers 200
+
+
+
+
+
+
+[https://cloud.mongodb.com]: https://cloud.mongodb.com

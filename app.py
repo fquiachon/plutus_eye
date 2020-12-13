@@ -1,20 +1,16 @@
 from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, String, Integer
-from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
-from os import path
-from utils.ticker import global_tickers
+from flask_pymongo import PyMongo
+from .utils.ticker import global_tickers
+from .settings import MONGO_URI, JWT_SECRET_KEY
 
 
 app = Flask(__name__)
-basedir = path.abspath(path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + path.join(basedir, 'plutus.db')
-app.config['JWT_SECRET_KEY'] = 'super-secret' # test key only
+app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
+app.config['MONGO_URI'] = MONGO_URI
 
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
 jwt = JWTManager(app)
+mongo = PyMongo(app)
 
 
 @app.route('/global/tickers', methods=['POST'])
@@ -81,18 +77,24 @@ def welcome():
 
 @app.route('/register', methods=['POST'])
 def register():
-    email = request.form['email']
-    in_use = User.query.filter_by(email=email).first()
-    if in_use:
-        return jsonify(message="Email already in used."), 409
-    else:
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        password = request.form['password']
-        user = User(first_name=first_name, last_name=last_name, email=email, password=password)
-        db.session.add(user)
-        db.session.commit()
-        return jsonify(message="User created successfully"), 201
+    try:
+        email = request.form['email']
+        users_collection = mongo.db.users
+        in_use = users_collection.find_one({"email": email})
+        if in_use:
+            return jsonify(message="Email already in used."), 409
+        else:
+            first_name = request.form['first_name']
+            last_name = request.form['last_name']
+            password = request.form['password']
+            users_collection.insert({'first_name': first_name,
+                                     'last_name': last_name,
+                                     'email': email,
+                                     'password': password
+                                     })
+            return jsonify(message="User created successfully"), 201
+    except Exception as e:
+        return jsonify(message=f"Error occurred, {e}"), 400
 
 
 @app.route('/login', methods=['POST'])
@@ -103,37 +105,14 @@ def login():
     else:
         email = request.form['email']
         password = request.form['password']
-
-    test = User.query.filter_by(email=email, password=password).first()
-    if test:
+    users_collection = mongo.db.users
+    user = users_collection.find_one({"$and": [{"email": email}, {"password": password}]})
+    if user:
         access_token = create_access_token(identity=email)
         return jsonify(meassage="Login succeeded", access_token=access_token)
     else:
         return jsonify(meassage="Bad Email or Password"), 401
 
 
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = ['id', 'first_name', 'last_name', 'email', 'password']
-
-
-class User(db.Model):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True)
-    first_name = Column(String)
-    last_name = Column(String)
-    email = Column(String, unique=True)
-    password = Column(String)
-
-
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
-
-
-def init():
-    db.create_all()
-
-
 if __name__ == '__main__':
-    init()
     app.run()
