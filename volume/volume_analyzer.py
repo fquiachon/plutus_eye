@@ -15,7 +15,7 @@ class VolumeAnalyzer:
             "Doubled": self.doub,
             "Same": self.single,
             "Below": self.below,
-            "Status": "1/1 completed"
+            "Status": "Not Started"
         }
 
     def analyze_many(self, tickers):
@@ -33,13 +33,13 @@ class VolumeAnalyzer:
         end_datetime = datetime.now()
         start_datetime = end_datetime - timedelta(days=15)
         print(f'start: {start_datetime} and end: {end_datetime}')
-
         result = get_data(ticker, start_datetime.timestamp(), end_datetime.timestamp())
         previous_averaged_volume = int(result['volume'].iloc[0:9].mean())
         todays_volume = result.volume.iloc[-1]
         todays_date = result.trading_date.iloc[-1]
         print(f'current:{todays_volume}, previous:{previous_averaged_volume}')
         self.get_volume_percent(todays_date, previous_averaged_volume, ticker, todays_volume)
+        self.increased_symbols['Status'] = 'Completed'
         return self.increased_symbols
 
     def get_volume_percent(self, todays_date, previous_averaged_volume, ticker, todays_volume):
