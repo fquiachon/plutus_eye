@@ -172,7 +172,7 @@ def add_global_tickers():
     }
 
     if len(existing_tickers) == 0:
-            message['Error'] = []
+        message['Error'] = []
     else:
         message['Error'] = f'Tickers already exist, {existing_tickers}'
 
@@ -186,7 +186,7 @@ def add_global_tickers():
 @app.route('/global/tickers', methods=['GET'])
 @jwt_required
 def get_global_tickers():
-    return jsonify({'tickers' : global_tickers}), 200
+    return jsonify({'tickers': global_tickers}), 200
 
 
 @app.route('/global/tickers', methods=['DELETE'])

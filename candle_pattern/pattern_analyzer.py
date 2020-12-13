@@ -117,7 +117,6 @@ class PatternAnalyzer:
 
                 if not self.matched:
                     self.no_patter.append({'symbol': ticker, 'date': current.trading_date})
-
             return self.patterns
         except Exception as e:
             raise Exception(f'Error for code {ticker}, {candle_data}, {e}')

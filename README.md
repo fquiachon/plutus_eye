@@ -39,18 +39,16 @@ DELETE /global/tickers 200
 
 POST /global/candle  201
 
-GET /global/candle/transaction/string:transaction 200
+GET /global/candle/<string:ticker> 200
 
-DELETE /global/candle/transaction/string:transaction 200
+GET /global/candle/transaction/<string:transaction> 200
 
-GET /global/candle/string:ticker 200
-
-GET /global/volume/transaction/<string:transaction> 200
-
-DELETE /global/volume/transaction/<string:transaction> 200
+DELETE /global/candle/transaction/<string:transaction> 200
 
 POST /global/volume 201
 
 GET /global/volume/<string:ticker> 200
 
+GET /global/volume/transaction/<string:transaction> 200
 
+DELETE /global/volume/transaction/<string:transaction> 200
