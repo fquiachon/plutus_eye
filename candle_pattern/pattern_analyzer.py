@@ -71,7 +71,7 @@ class PatternAnalyzer:
                 prev_2 = candle_data.iloc[i - 2, :]
 
                 if current['open'] + current['close'] + current['low'] + current['high'] == 0:
-                    self.no_patter.append(f'{ticker}:{current.trading_date}')
+                    self.no_patter.append({'symbol': ticker, 'date': current.trading_date})
                     continue
                 elif current['open'] < current['close']:
                     candle_type = 'Bull'
@@ -116,23 +116,22 @@ class PatternAnalyzer:
                 self.is_hammer(candle_type, current, head_wick, realbody, tail_wick, ticker)
 
                 if not self.matched:
-                    self.no_patter.append(f'{ticker}:{current.trading_date}')
-
+                    self.no_patter.append({'symbol': ticker, 'date': current.trading_date})
             return self.patterns
         except Exception as e:
             raise Exception(f'Error for code {ticker}, {candle_data}, {e}')
 
     def is_doji(self, current, ticker):
         if current['open'] == current['low']:
-            self.gravestone_doji.append(f'{ticker}:{current.trading_date}')
+            self.gravestone_doji.append({'symbol': ticker, 'date': current.trading_date})
             head_wick = current['high'] - current['open']
             tail_wick = 0
         elif current['open'] == current['high']:
-            self.dragonfly_doji.append(f'{ticker}:{current.trading_date}')
+            self.dragonfly_doji.append({'symbol': ticker, 'date': current.trading_date})
             head_wick = 0
             tail_wick = current['open'] - current['low']
         else:
-            self.doji.append(f'{ticker}:{current.trading_date}')
+            self.doji.append({'symbol': ticker, 'date': current.trading_date})
             tail_wick = current['open'] - current['low']
             head_wick = current['high'] - current['open']
         self.matched = True
@@ -141,49 +140,49 @@ class PatternAnalyzer:
     def is_hammer(self, candle_type, current, head_wick, realbody, tail_wick, ticker):
         if realbody > head_wick * 2 and tail_wick > head_wick * 2 and realbody * 2 < tail_wick:
             if candle_type == 'Bull':
-                self.bull_hammer.append(f'{ticker}:{current.trading_date}')
+                self.bull_hammer.append({'symbol': ticker, 'date': current.trading_date})
             elif candle_type == 'Bear':
-                print(f'{ticker}:{current.trading_date}')
-                self.bear_hammer.append(f'{ticker}:{current.trading_date}')
+                print({'symbol': ticker, 'date': current.trading_date})
+                self.bear_hammer.append({'symbol': ticker, 'date': current.trading_date})
             self.matched = True
 
     def is_outside_bar(self, current, prev, ticker):
         if current['high'] > prev['high'] and current['low'] < prev['low']:
-            self.outside_bar.append(f'{ticker}:{current.trading_date}')
+            self.outside_bar.append({'symbol': ticker, 'date': current.trading_date})
             self.matched = True
 
     def is_inside_bar(self, current, prev, ticker):
         if current['high'] < prev['high'] and current['low'] > prev['low']:
-            self.inside_bar.append(f'{ticker}:{current.trading_date}')
+            self.inside_bar.append({'symbol': ticker, 'date': current.trading_date})
             self.matched = True
 
     def is_bearish_pinbar(self, candle_range, current, prev, realbody, ticker):
         if realbody <= candle_range / 3 and max(current['open'], current['close']) < (
                 current['high'] + current['low']) / 2 and current['high'] > prev['high']:
-            self.bearish_pinbar.append(f'{ticker}:{current.trading_date}')
+            self.bearish_pinbar.append({'symbol': ticker, 'date': current.trading_date})
             self.matched = True
 
     def is_bullish_pinbar(self, candle_range, current, prev, realbody, ticker):
         if realbody <= candle_range / 3 and min(current['open'], current['close']) > (
                 current['high'] + current['low']) / 2 and current['low'] < prev['low']:
-            self.bullish_pinbar.append(f'{ticker}:{current.trading_date}')
+            self.bullish_pinbar.append({'symbol': ticker, 'date': current.trading_date})
             self.matched = True
 
     def is_bearish_swing(self, current, prev, prev_2, ticker):
         if current['high'] < prev['high'] and prev['high'] > prev_2['high']:
-            self.bearish_swing_codes.append(f'{ticker}:{current.trading_date}')
+            self.bearish_swing_codes.append({'symbol': ticker, 'date': current.trading_date})
             self.matched = True
 
     def is_bullish_swing(self, current, prev, prev_2, ticker):
         if current['low'] > prev['low'] and prev['low'] < prev_2['low']:
-            self.bullish_swing_codes.append(f'{ticker}:{current.trading_date}')
+            self.bullish_swing_codes.append({'symbol': ticker, 'date': current.trading_date})
             self.matched = True
 
     def is_bearish_engulfing(self, candle_range, current, prev, realbody, ticker):
         if current['high'] > prev['high'] and current['low'] < prev['low'] and realbody >= 0.8 * candle_range and \
                 current[
                     'close'] < current['open']:
-            self.bearish_eng_codes.append(f'{ticker}:{current.trading_date}')
+            self.bearish_eng_codes.append({'symbol': ticker, 'date': current.trading_date})
             return True
         return False
 
@@ -191,5 +190,5 @@ class PatternAnalyzer:
         if current['high'] > prev['high'] and current['low'] < prev['low'] and realbody >= 0.8 * candle_range and \
                 current[
                     'close'] > current['open']:
-            self.bullish_eng_codes.append(f'{ticker}:{current.trading_date}')
+            self.bullish_eng_codes.append({'symbol': ticker, 'date': current.trading_date})
             self.matched = True
