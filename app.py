@@ -1,9 +1,13 @@
 from flask import Flask, jsonify, request
+from uuid import uuid4
+from threading import Thread
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from flask_pymongo import PyMongo
+
+from .utils.cache import pattern_cache
 from .utils.ticker import global_tickers
 from .settings import MONGO_URI, JWT_SECRET_KEY
-
+from .candle_pattern.pattern_analyzer import PatternAnalyzer
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
@@ -11,6 +15,69 @@ app.config['MONGO_URI'] = MONGO_URI
 
 jwt = JWTManager(app)
 mongo = PyMongo(app)
+
+
+@app.route('/global/candle/transaction/<string:transaction>', methods=['GET'])
+@jwt_required
+def get_pattern_by_transaction_id(transaction: str):
+    if transaction in pattern_cache:
+        pa = pattern_cache.get(transaction)
+        message = {
+            'pattern': pa.patterns
+        }
+        return jsonify(message), 200
+    else:
+        return jsonify(message=f'Transaction:{transaction} not found'), 404
+
+
+@app.route('/global/candle/transaction/<string:transaction>', methods=['DELETE'])
+@jwt_required
+def delete_pattern_cache(transaction: str):
+    if transaction == 'ALL' or transaction == 'all':
+        pattern_cache.clear()
+    elif transaction in pattern_cache:
+        pattern_cache.pop(transaction)
+    else:
+        return jsonify(message=f'Transaction not found', transaction_id=transaction), 404
+    return jsonify(message=f'transaction successfully removed from pattern cache', transaction_id=transaction), 200
+
+
+@app.route('/global/candle', methods=['POST'])
+@jwt_required
+def analyze_all_pattern():
+    if len(pattern_cache) > 10:
+        return jsonify(message='Cache is Full, try again later or free up some cache'), 409
+
+    pa = PatternAnalyzer()
+    transaction = str(uuid4())
+
+    if request.is_json:
+        tickers = request.json['tickers'].split(',')
+    else:
+        tickers = request.form['tickers'].split(',')
+
+    if tickers[0] == 'ALL' or tickers[0] == 'all':
+        if len(global_tickers) == 0:
+            return jsonify(message='Global tickers is Empty.'), 400
+        tickers = global_tickers
+
+    pattern_cache[transaction] = pa
+
+    pattern_thread = Thread(target=pa.analyze_many, args=(tickers,))
+    pattern_thread.start()
+
+    return jsonify(transaction_id=transaction), 200
+
+
+@app.route('/global/candle/<string:ticker>', methods=['GET'])
+@jwt_required
+def analyze_pattern(ticker: str):
+    pa = PatternAnalyzer()
+    patterns = pa.analyze(ticker)
+    message = {
+        'patterns': patterns
+    }
+    return jsonify(message), 200
 
 
 @app.route('/global/tickers', methods=['POST'])

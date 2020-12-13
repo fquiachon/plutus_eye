@@ -1,4 +1,4 @@
-# market
+# Plutus Eye, Is a Global Market prediction web API that aims to improve and automate analysis of the stock market price direction based on available historical data. 
 
 ## Pre Setup
 <p>Create a new Python 3.x virtual environment</p>
@@ -28,9 +28,12 @@ GET /global/tickers 200
 
 DELETE /global/tickers 200
 
+POST /global/candle  201
+
+GET /global/candle/transaction/string:transaction 200
+
+DELETE /global/candle/transaction/string:transaction 200
+
+GET /global/candle/string:ticker 200
 
 
-
-
-
-[https://cloud.mongodb.com]: https://cloud.mongodb.com
