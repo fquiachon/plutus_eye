@@ -6,7 +6,7 @@ from ..settings import GATEWAY_TOKEN
 
 
 end_datetime = datetime.now()
-start_datetime = end_datetime - timedelta(days=5)
+start_datetime = end_datetime - timedelta(days=6)
 
 DEFAULT_START_DATE = start_datetime.timestamp()
 DEFAULT_END_DATE = end_datetime.timestamp()

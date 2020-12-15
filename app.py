@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from flask_pymongo import PyMongo
 
 from .utils.cache import pattern_cache, volume_cache
-from .utils.ticker import global_tickers
+from .utils.ticker import custom_tickers, commodities, tech, services, finance, health_care, consumer_goods, default_tickers
 from .settings import MONGO_URI, JWT_SECRET_KEY
 from .candle_pattern.pattern_analyzer import PatternAnalyzer
 from .volume.volume_analyzer import VolumeAnalyzer
@@ -29,7 +29,7 @@ def get_volume_by_transaction_id(transaction: str):
         }
         return jsonify(message), message['status']
     else:
-        return jsonify(message=f'Transaction:{transaction} not found'), 404
+        return jsonify(message='Transaction not found.', transaction_id=transaction), 404
 
 
 @app.route('/global/volume/transaction/<string:transaction>', methods=['DELETE'])
@@ -59,9 +59,22 @@ def analyze_multiple_volume():
         tickers = request.form['tickers'].split(',')
 
     if tickers[0] == 'ALL' or tickers[0] == 'all':
-        if len(global_tickers) == 0:
+        if len(custom_tickers) == 0:
             return jsonify(message='Global tickers is Empty.'), 400
-        tickers = global_tickers
+        tickers = custom_tickers
+
+    if tickers[0] == 'services':
+        tickers = services
+    if tickers[0] == 'commodities':
+        tickers = commodities
+    if tickers[0] == 'technology':
+        tickers = tech
+    if tickers[0] == 'consumer_goods':
+        tickers = consumer_goods
+    if tickers[0] == 'finance':
+        tickers = finance
+    if tickers[0] == 'health_care':
+        tickers = health_care
 
     volume_cache[transaction] = va
 
@@ -95,7 +108,7 @@ def get_pattern_by_transaction_id(transaction: str):
         }
         return jsonify(message), 200
     else:
-        return jsonify(message=f'Transaction:{transaction} not found'), 404
+        return jsonify(message='Transaction not found.', transaction_id=transaction), 404
 
 
 @app.route('/global/candle/transaction/<string:transaction>', methods=['DELETE'])
@@ -125,9 +138,22 @@ def analyze_all_pattern():
         tickers = request.form['tickers'].split(',')
 
     if tickers[0] == 'ALL' or tickers[0] == 'all':
-        if len(global_tickers) == 0:
+        if len(custom_tickers) == 0:
             return jsonify(message='Global tickers is Empty.'), 400
-        tickers = global_tickers
+        tickers = custom_tickers
+
+    if tickers[0] == 'services':
+        tickers = services
+    if tickers[0] == 'commodities':
+        tickers = commodities
+    if tickers[0] == 'technology':
+        tickers = tech
+    if tickers[0] == 'consumer_goods':
+        tickers = consumer_goods
+    if tickers[0] == 'finance':
+        tickers = finance
+    if tickers[0] == 'health_care':
+        tickers = health_care
 
     pattern_cache[transaction] = pa
 
@@ -160,11 +186,11 @@ def add_global_tickers():
         tickers = request.form['tickers'].split(',')
 
     for ticker in tickers:
-        if ticker in global_tickers:
+        if ticker in custom_tickers:
             existing_tickers.append(ticker)
         else:
             added_tickers.append(ticker)
-            global_tickers.append(ticker)
+            custom_tickers.append(ticker)
 
     message = {
         'status': 201,
@@ -186,7 +212,17 @@ def add_global_tickers():
 @app.route('/global/tickers', methods=['GET'])
 @jwt_required
 def get_global_tickers():
-    return jsonify({'tickers': global_tickers}), 200
+    return jsonify({'tickers': custom_tickers}), 200
+
+
+@app.route('/global/tickers/<string:category>', methods=['GET'])
+@jwt_required
+def get_tickers_by_category(category: str):
+    if category in default_tickers:
+        return jsonify({'tickers': default_tickers[category]}), 200
+    else:
+        return jsonify(message=f'Category not found. Use technology, consumer_goods, health_care' +
+                               ' services, finance and commodities'), 404
 
 
 @app.route('/global/tickers', methods=['DELETE'])
@@ -199,8 +235,8 @@ def del_global_tickers():
         tickers = request.form['tickers'].split(',')
 
     for ticker in tickers:
-        if ticker in global_tickers:
-            removed_item = global_tickers.pop(global_tickers.index(ticker))
+        if ticker in custom_tickers:
+            removed_item = custom_tickers.pop(custom_tickers.index(ticker))
             deleted_tickers.append(removed_item)
     return jsonify({'Successfully deleted tickers': deleted_tickers}), 200
 
