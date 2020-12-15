@@ -35,7 +35,6 @@ class PatternAnalyzer:
             'Gravestone Doji': self.gravestone_doji,
             'Outside Bar': self.outside_bar,
             'Inside Bar': self.inside_bar,
-            'No Pattern': self.no_patter,
         }
 
     def analyze_many(self, tickers):
@@ -117,6 +116,8 @@ class PatternAnalyzer:
 
                 if not self.matched:
                     self.no_patter.append({'symbol': ticker, 'date': current.trading_date})
+                    self.patterns['No Pattern'] = f'{len(self.no_patter)} Stock(s)'
+                    print(f'No pattern for ticker:{ticker}, date:{current.trading_date}')
             return self.patterns
         except Exception as e:
             raise Exception(f'Error for code {ticker}, {candle_data}, {e}')
