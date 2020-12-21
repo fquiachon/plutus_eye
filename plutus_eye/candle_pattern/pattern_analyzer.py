@@ -1,8 +1,9 @@
-from .gateway import get_data
 
 
 class PatternAnalyzer:
-    def __init__(self):
+    def __init__(self, gateaway, history):
+        self.history = history
+        self.gateway = gateaway
         self.matched = False
         self.bullish_eng_codes = []
         self.bearish_eng_codes = []
@@ -47,16 +48,12 @@ class PatternAnalyzer:
             finally:
                 self.patterns['Status'] = f'{idx+1}/{len(tickers)} Completed'
 
-    def analyze(self, ticker, market_type='global'):
+    def analyze(self, ticker):
         ticker = ticker.upper()
-        if market_type == 'global':
-            candle_data = get_data(ticker)
-            if 's' in candle_data:
-                return candle_data
-        else:
-            candle_data = {'Message': 'Not yet supported'}
+        start, end = self.history.get_range()
+        candle_data = self.gateway.get_data(ticker, start, end)
+        if 's' in candle_data:
             return candle_data
-
         return self.check_pattern(ticker, candle_data)
 
     def check_pattern(self, ticker, candle_data):
