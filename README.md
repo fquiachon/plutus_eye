@@ -28,7 +28,7 @@ See https://cloud.mongodb.com for the instruction
 
 
 ## Endpoints
-https://<host>:<port>/<API Endpoints>
+https://`<host>`:`<port>`/<API Endpoints>
 
 ### User Registration and Login
 POST /register 201
@@ -85,6 +85,8 @@ GET /volume/transaction/<string:transaction> 200
 DELETE /volume/transaction/<string:transaction> 200
 
 ## Execution
+
+## Development Environment
 1. Generate `cert.pem` and `key.pem` certificates see https://blog.miguelgrinberg.com/post/running-your-flask-application-over-https 
 
     `openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365`
@@ -93,4 +95,8 @@ DELETE /volume/transaction/<string:transaction> 200
 
     `flask run --cert=cert.pem --key=key.pem`
 
-
+## Cloud Environment
+    Executr through a `docker-compose.yml` file
+    `docker-compose up -d`
+    
+    

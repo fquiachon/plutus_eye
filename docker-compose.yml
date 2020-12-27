@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: 'docker.io/bitnami/mongodb:4.4-debian-10'
+    ports:
+      - "27017:27017"
+    volumes:
+      - 'mongodb_data:/bitnami/mongodb'
+
+  server:
+    build: .
+    image: 'docker.io/fquiachon/plutus-server.0.0.1'
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+      - FLASK_APP=plutus_eye
+      - FLASK_ENV=development
+      - MONGO_URI=mongodb+srv://{{dbusername}}:{{dbpassword}}@mongodb:27017/{{dbname}}?retryWrites=true&w=majority
+      - JWT_SECRET_KEY=super-secret
+      - GATEWAY_TOKEN ={{finnhubtoken}}
