@@ -2,11 +2,14 @@ class VolumeAnalyzer:
     def __init__(self, gateway, history):
         self.history = history
         self.gateway = gateway
-        self.quad = []
-        self.trip = []
-        self.doub = []
-        self.single = []
-        self.below = []
+        self.single = {}
+        self.below = {}
+        self.quad_summary = []
+        self.trip_summary = []
+        self.doub_summary = []
+        self.quad = {'tickers': self.quad_summary}
+        self.trip = {'tickers': self.trip_summary}
+        self.doub = {'tickers': self.doub_summary}
         self.increased_symbols = {
             "Quadrupled": self.quad,
             "Tripled": self.trip,
@@ -51,32 +54,39 @@ class VolumeAnalyzer:
 
     def get_volume_percent(self, todays_date, previous_averaged_volume, ticker, todays_volume, candle, todays_close):
         if 4 <= (todays_volume / previous_averaged_volume):
-            self.quad.append({'symbol': ticker, 'date': todays_date,
-                              'size': f'{(todays_volume / previous_averaged_volume):.2f}',
-                              'price': f'{todays_close:.2f}',
-                              'candle': candle,
-                              'link': f'https://www.investagrams.com/Chart/{ticker}'
-                              })
+            self.quad[ticker] = {'date': todays_date,
+                                       'size': f'{(todays_volume / previous_averaged_volume):.2f}',
+                                       'price': f'{todays_close:.2f}',
+                                       'candle': candle,
+                                       'link': f'https://www.investagrams.com/Chart/{ticker}'
+                                  }
+            self.quad_summary.append(ticker)
         elif 3 <= (todays_volume / previous_averaged_volume):
-            self.trip.append({'symbol': ticker, 'date': todays_date,
-                              'size': f'{(todays_volume / previous_averaged_volume):.2f}',
-                              'price': f'{todays_close:.2f}',
-                              'link': f'https://www.investagrams.com/Chart/{ticker}',
-                              'candle': candle})
+            self.trip[ticker] = {'date': todays_date,
+                                       'size': f'{(todays_volume / previous_averaged_volume):.2f}',
+                                       'price': f'{todays_close:.2f}',
+                                       'link': f'https://www.investagrams.com/Chart/{ticker}',
+                                       'candle': candle
+                                       }
+            self.trip_summary.append(ticker)
         elif 2 <= (todays_volume / previous_averaged_volume):
-            self.doub.append({'symbol': ticker, 'date': todays_date,
-                              'size': f'{(todays_volume / previous_averaged_volume):.2f}',
-                              'price': f'{todays_close:.2f}',
-                              'link': f'https://www.investagrams.com/Chart/{ticker}',
-                              'candle': candle})
+            self.doub[ticker] = {'date': todays_date,
+                                       'size': f'{(todays_volume / previous_averaged_volume):.2f}',
+                                       'price': f'{todays_close:.2f}',
+                                       'link': f'https://www.investagrams.com/Chart/{ticker}',
+                                       'candle': candle
+                                       }
+            self.doub_summary.append(ticker)
         elif 1 <= (todays_volume / previous_averaged_volume):
-            self.single.append({'symbol': ticker, 'date': todays_date,
-                                'size': f'{(todays_volume / previous_averaged_volume):.2f}',
-                                'price': f'{todays_close:.2f}',
-                                'link': f'https://www.investagrams.com/Chart/{ticker}',
-                                'candle': candle})
+            self.single[ticker] = {'date': todays_date,
+                                         'size': f'{(todays_volume / previous_averaged_volume):.2f}',
+                                         'price': f'{todays_close:.2f}',
+                                         'link': f'https://www.investagrams.com/Chart/{ticker}',
+                                         'candle': candle
+                                         }
         else:
-            self.below.append({'symbol': ticker, 'date': todays_date,
-                               'size': f'{(todays_volume / previous_averaged_volume):.2f}',
-                               'price': f'{todays_close:.2f}',
-                               'candle': candle})
+            self.below[ticker] = {'date': todays_date,
+                                  'size': f'{(todays_volume / previous_averaged_volume):.2f}',
+                                  'price': f'{todays_close:.2f}',
+                                  'candle': candle
+                                  }
