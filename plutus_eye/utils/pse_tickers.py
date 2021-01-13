@@ -1,0 +1,23 @@
+custom_tickers = []
+
+default_tickers = ['LPZ', 'PHA', 'IMP', 'RLT', 'PAX', 'DIZ', 'I', 'MG', 'AREIT', 'HVN', 'BC', 'PTT', 'DMW', 'PSB',
+                   'COSCO', 'CNPF', 'TEL', 'PAL', 'MJIC', 'ELI', 'MRP', 'DD', 'CDC', 'STI', 'PPC', 'APC', 'LSC', 'MFC',
+                   'LOTO', 'EDC', 'MAXS', 'TBGI', 'BMM', 'LMG', 'CEI', 'DAVIN', 'AC', 'CEU', 'GREEN', 'GSMI', 'ABG',
+                   'CIC', 'T', 'SGI', 'NIKL', 'PHN', 'NI', 'MER', 'AT', 'CHP', 'APVI', 'HLCM', 'PNX', 'MARC', 'SSP',
+                   'MAH', 'MBT', 'FMETF', 'LFM', 'MBC', 'UBP', 'AR', 'NXGEN', 'BCOR', 'JAS', 'GPH', 'VUL', 'ANS', 'FDC',
+                   'REG', 'STN', 'AB', 'FPI', 'FGEN', 'FAF', 'ARA', 'SLF', 'GLO', 'JOH', 'ALI', 'MWC', 'AEV', 'CHI',
+                   'PERC', 'SEVN', 'PHC', 'TFC', 'ACE', 'SRDC', 'ICT', 'PRC', 'FYN', 'ACEN', 'EW', 'KPPI', 'DWC',
+                   'ALCO', 'CPM', 'FFI', 'MEG', 'BH', 'COAL', 'FNI', 'ORE', 'FLI', 'PBC', 'MWIDE', 'KEP', 'MRC', 'APL',
+                   'PCOR', 'ATI', 'DNL', 'FB', 'ZHI', 'NOW', 'WEB', 'IMI', 'PX', 'CPG', 'CHIB', 'UNI', 'VVT', 'LC',
+                   'EEI', 'PIP', 'LR', 'DELM', 'JGS', 'FPH', 'SMPH', 'PCP', 'PRMX', 'AP', 'WLCON', 'HOUSE', 'MHC',
+                   'BEL', 'EMP', 'MJC', 'EIBA', 'C', 'ABS', 'SPC', 'SSI', 'APX', 'GEO', 'WIN', 'BHI', 'ABA', 'PTC',
+                   'RCB', 'BKR', 'BPI', 'PRIM', 'MM', 'AAA', 'FEU', 'SBS', 'STR', 'SLI', 'ACEX', 'PMPC', 'EAGLE', 'ION',
+                   'PBB', 'CSB', 'SGP', 'VMC', 'BLFI', 'URC', 'ROCK', 'CPV', 'LBC', 'EURO', 'PMT', 'RWM', 'MFIN',
+                   'HOME', 'GMAP', 'FERRO', 'SFI', 'AUB', 'HI', 'IRC', 'LIHC', 'GERI', 'CROWN', 'PORT', 'BSC', 'CAT',
+                   'BLOOM', 'IDC', 'SM', 'TFHI', 'FRUIT', 'MED', 'RFM', 'SHLPH', 'COL', 'SECB', 'PHR', 'TECH', 'SPM',
+                   'AGI', 'CYBR', 'LAND', 'MA', 'ALLHC', 'PHES', 'CEB', 'WPI', 'PGOLD', 'OM', 'DNA', 'FJP', 'ECP',
+                   'IPO', 'MVC', 'SMC', 'ABC', 'MRSGI', 'MACAY', 'CIP', 'LTG', 'IS', 'MB', 'EG', 'ANI', 'DFNN', 'GTCAP',
+                   'CNVRG', 'X', 'UPM', 'OPM', 'RLC', 'ACR', '2GO', 'OV', 'EVER', 'MPI', 'ALHI', 'PA', 'CLI', 'ABSP',
+                   'BRN', 'PXP', 'JFC', 'TUGS', 'IPM', 'VLL', 'FOOD', 'PIZZA', 'SCC', 'RRHI', 'BDO', 'ROX', 'GMA7',
+                   'CA', 'AXLM', 'MGH', 'VITA', 'MAC', 'SHNG', 'ATN', 'V', 'DITO', 'SOC', 'PNB', 'NRCP', 'PNC', 'DMC',
+                   'SPH', 'SUN', 'APO', 'PLC', 'KPH', 'PSE', 'RCI']
